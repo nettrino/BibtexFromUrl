@@ -1,0 +1,7 @@
+#result {
+    font-size: small;
+}
+
+#result .error {
+    color: red;
+}
