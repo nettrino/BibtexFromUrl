@@ -2,10 +2,13 @@ var defaultFormat = "US-1";
 function loadOpt() {
     var dateFormat = localStorage["dateFormat"];
 
-    // valid colors are red, blue, green and yellow
+    //http://en.wikipedia.org/wiki/Date_format_by_country
     if (dateFormat == undefined ||
-            (dateFormat != "US-1" && dateFormat != "US-2" &&
-             dateFormat != "EU-1" && dateFormat != "EU-2")) {
+            (dateFormat != "L-1" && dateFormat != "L-2" &&
+             dateFormat != "M-1" && dateFormat != "M-2" &&
+             dateFormat != "B-1" && dateFormat != "B-2" &&
+             dateFormat != "L-3" && dateFormat != "M-3" &&
+             dateFormat != "B-3" && dateFormat != "O-1" )) {
         dateFormat = defaultFormat;
     }
 

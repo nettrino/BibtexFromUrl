@@ -43,17 +43,35 @@ function formatDate(d)
     var format = localStorage["dateFormat"];
     var date = ""
     switch(format) {
-        case "US-1":
+        case "M-1":
             date = month + '/' + day + '/' + d.getFullYear();
             break;
-        case "US-2":
+        case "M-2":
             date = month + '-' + day + '-' + d.getFullYear();
             break;
-        case "EU-1":
+        case "M-3":
+            date = month + '.' + day + '.' + d.getFullYear();
+            break;
+        case "L-1":
             date = day + '/' + month + '/' + d.getFullYear();
             break;
-        case "EU-2":
+        case "L-2":
             date = day + '-' + month + '-' + d.getFullYear();
+            break;
+        case "L-3":
+            date = day + '.' + month + '.' + d.getFullYear();
+            break;
+        case "B-1":
+            date = d.getFullYear() + '/' + month + '/' + day;
+            break;
+        case "B-2":
+            date = d.getFullYear() + '-' + month + '-' + day;
+            break;
+        case "B-3":
+            date = d.getFullYear() + '.' + month + '.' + day;
+            break;
+        case "O-1":
+            date = month + '/' + d.getFullYear();
             break;
         default:
             date = month + '/' + day + '/' + d.getFullYear();
