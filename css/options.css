@@ -1,0 +1,142 @@
+body {
+    background-color:#F7F7F7;
+    margin:0;
+    width:100%;
+    height:100%;
+}
+
+#logo {
+    margin-top:5%;
+    margin-bottom:5%;
+}
+
+#container {
+    height:150px;
+    width:800px;
+    padding:40px;
+    margin-left:260px;
+    background-color:#FFFFFF;
+    -webkit-border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.13);
+}
+
+#buttons {
+    padding: 40px;
+    position: relative;
+}
+
+.btn {
+  -webkit-border-radius: 29;
+  margin-left:170px;
+  border-radius: 29px;
+  text-shadow: 1px 1px 3px #666666;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 16px;
+  background: #9f9f9f;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: #bfbfbf;
+  text-decoration: none;
+}
+
+
+/*
+ *
+ * Code from http://red-team-design.com/making-html-dropdowns-not-suck/
+ *
+ */
+
+
+.custom-dropdown--large {
+    font-size: 1.5em;
+}
+
+.custom-dropdown--small {
+    font-size: .7em;
+}
+
+.custom-dropdown__select{
+    font-size: inherit; /* inherit size from .custom-dropdown */
+    padding: .5em; /* add some space*/
+    margin: 0; /* remove default margins */
+}
+
+.custom-dropdown__select--white {
+    background-color: #fff;
+    color: #444;
+}
+
+@supports (pointer-events: none) and
+      ((-webkit-appearance: none) or
+      (-moz-appearance: none) or
+      (appearance: none)) {
+
+    .custom-dropdown {
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .custom-dropdown__select {
+        /* accommodate with the pseudo elements for the dropdown arrow */
+        padding-right: 2.5em;
+        border: 0;
+        border-radius: 3px;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    .custom-dropdown::before,
+    .custom-dropdown::after {
+        content: "";
+        position: absolute;
+        pointer-events: none;
+    }
+
+    .custom-dropdown::after { /*  Custom dropdown arrow */
+        content: "\25BC";
+        height: 1em;
+        font-size: .625em;
+        line-height: 1;
+        right: 1.2em;
+        top: 50%; margin-top: -.5em;
+    }
+
+    .custom-dropdown::before { /*  Custom dropdown arrow cover */
+        width: 2em;
+        right: 0; top: 0; bottom: 0;
+        border-radius: 0 3px 3px 0;
+    }
+
+    .custom-dropdown__select[disabled] {
+        color: rgba(0,0,0,.3);
+    }
+
+    .custom-dropdown.custom-dropdown--disabled::after {
+        color: rgba(0,0,0,.1);
+    }
+
+    /* White dropdown style */
+    .custom-dropdown--white::before {
+        top: .5em; bottom: .5em;
+        background-color: #fff;
+        border-left: 1px solid rgba(0,0,0,.1);
+    }
+
+    .custom-dropdown--white::after {
+        color: rgba(0,0,0,.9);
+    }
+
+    /* FF only temp fix */
+    @-moz-document url-prefix() {
+        .custom-dropdown__select             { padding-right: .9em }
+        .custom-dropdown--large .custom-dropdown__select { padding-right: 1.3em }
+        .custom-dropdown--small .custom-dropdown__select { padding-right: .5em }
+    }
+}
+

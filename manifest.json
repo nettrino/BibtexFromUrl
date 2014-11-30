@@ -3,7 +3,13 @@
 
   "name": "BibTeX entry from URL",
   "description": "This extension provides a BibTeX reference for the active URL",
-  "version": "1.2.3",
+  "version": "1.2.4",
+
+  "options_page": "options.html",
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": true
+  },
 
   "browser_action":
   {

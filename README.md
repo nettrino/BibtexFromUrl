@@ -5,11 +5,11 @@ A simple chrome extension that creates a BibTeX entry for the URL in the current
 
 For http://developer.chrome.com/extensions/packaging.html we get:
 
-@misc{Packa8:Online,
-author = {},
-title = {Packaging - Google Chrome},
-howpublished = {\url{https://developer.chrome.com/extensions/packaging}},
-month = {},
-year = {},
-note = {(Visited on 06/10/2014)}
-}
+    @misc{Packa8:online,
+    author = {},
+    title = {Packaging - Google Chrome},
+    howpublished = {\url{https://developer.chrome.com/extensions/packaging}},
+    month = {},
+    year = {},
+    note = {(Visited on 06/10/2014)}
+    }
