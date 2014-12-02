@@ -150,6 +150,8 @@ function generateBibTeXEntry(tab) {
 	entry += "author = {},\n";
 	entry += "title = {" + lescape(tab.title) + "},\n";
 	entry += "howpublished = {\\url{" + tab.url + "}},\n";
+	entry += "month = {},\n";
+	entry += "year = {},\n";
 	entry += "note = {(Visited on " + formatDate(new Date())+ ")}\n";
 	entry += "}";
 

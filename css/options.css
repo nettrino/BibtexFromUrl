@@ -6,15 +6,18 @@ body {
 }
 
 #logo {
-    margin-top:5%;
-    margin-bottom:5%;
+    width:800px;
+    padding:40px;
+    margin-left:auto;
+    margin-right:auto;
 }
 
 #container {
     height:150px;
     width:800px;
     padding:40px;
-    margin-left:260px;
+    margin-left:auto;
+    margin-right:auto;
     background-color:#FFFFFF;
     -webkit-border-radius: 10px;
     box-shadow: 0 1px 3px rgba(0,0,0,.13);
