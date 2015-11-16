@@ -1,9 +1,9 @@
 var defaultFormat = "US-1";
 function loadOpt() {
-    var dateFormat = localStorage["dateFormat"];
+    var dateFormat = localStorage["date.format"];
 
     //http://en.wikipedia.org/wiki/Date_format_by_country
-    if (dateFormat == undefined ||
+    if (!dateFormat ||
             (dateFormat != "L-1" && dateFormat != "L-2" &&
              dateFormat != "M-1" && dateFormat != "M-2" &&
              dateFormat != "B-1" && dateFormat != "B-2" &&
@@ -25,12 +25,11 @@ function loadOpt() {
 function saveOpt() {
     var select = document.getElementById("dateFormat");
     var format = select.children[select.selectedIndex].value;
-    alert("Saved!");
-    localStorage["dateFormat"] = format;
+    localStorage["date.format"] = format;
 }
 
 function restoreOpt() {
-    localStorage.removeItem("dateFormat");
+    localStorage.removeItem("date.Format");
     location.reload();
 }
 

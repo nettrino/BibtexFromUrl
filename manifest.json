@@ -3,12 +3,17 @@
 
   "name": "BibTeX entry from URL",
   "description": "This extension provides a BibTeX reference for the active URL",
-  "version": "1.2.7",
+  "version": "1.2.8",
 
   "options_page": "options.html",
   "options_ui": {
     "page": "options.html",
     "chrome_style": true
+  },
+
+  "background": {
+    "persistent": false,
+    "scripts": ["js/background.js"]
   },
 
   "browser_action":
@@ -19,12 +24,16 @@
 
   "icons":
   {
-      "128": "images/icon128.png",
-      "48": "images/icon48.png",
-      "30": "images/icon30.png"
+    "128": "images/icon128.png",
+    "48": "images/icon48.png",
+    "30": "images/icon30.png"
   },
 
+
   "permissions": [
-    "tabs"
+    "contextMenus",
+    "tabs",
+    "activeTab"
   ]
+
 }

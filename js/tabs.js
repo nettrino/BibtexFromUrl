@@ -1,5 +1,4 @@
-<!doctype html>
-<!--
+/*
 <license>
 Get BibTeX entry from URL - a Google Chrome extension
 Copyright 2013 - 2015 Petsios Theofilos.
@@ -21,17 +20,17 @@ Credits to cbenz for his Get-opened-tabs-URLs-Chrome-extension
 (https://github.com/cbenz) and to Dang Mai for his LaTeX escaping script
 https://github.com/dangmai/escape-latex
 </license>
--->
+*/
 
-<html>
-  <head>
-    <title>BibTeX extension</title>
-    <link rel="stylesheet" type="text/css" href="css/popup.css" />
-  </head>
-  <body>
-    <textarea id="clipboardholder" style="display:none;"></textarea>
-    <span id="result"></span>
-    <script src="js/bibtex.js"></script>
-    <script src="js/tabs.js"></script>
-  </body>
-</html>
+//FIXME replace hardcoded stuff
+chrome.tabs.query({'active': true, 'currentWindow': true}, function (tab) {
+  if (tab) {
+    copyToClipboard(generateBibTeXEntry(tab[0].title,
+                                        tab[0].url,
+                                        localStorage["date.format"]),
+                    "clipboardholder");
+  } else {
+    document.getElementById("result").innerHTML =
+      '<span class="error">no active tab</span>';
+  }
+});

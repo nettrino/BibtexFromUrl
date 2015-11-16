@@ -1,43 +1,42 @@
 <html>
-    <head>
-        <title>BibTeXFromURL Options</title>
-        <link rel="stylesheet" type="text/css" href="css/options.css" />
-    </head>
-    <body>
-        <div id="logo">
-            <center>
-                <img src="images/icon128.png" style="height:100px;width:100px;">
-                </img>
-            </center>
+  <head>
+    <title>BibTeXFromURL Options</title>
+    <link rel="stylesheet" type="text/css" href="css/options.css" />
+  </head>
+  <body>
+    <div id="logo">
+      <center>
+        <img src="images/icon128.png" alt="Hey" style="height:100px;width:100px;"/>
+      </center>
+    </div>
+    <div id="container">
+      <div id="options">
+        <div class="option">
+          <h2>Date Format</h2>
+          <center>
+            <span class="custom-dropdown custom-dropdown--emerald
+              custom-dropdown--large">
+              <select id="dateFormat" class="custom-dropdown__select custom-dropdown__select--emerald">
+                <option value="M-1">mm/dd/yyyy</option>
+                <option value="M-2">mm-dd-yyyy</option>
+                <option value="M-3">mm.dd.yyyy</option>
+                <option value="L-1">dd/mm/yyyy</option>
+                <option value="L-2">dd-mm-yyyy</option>
+                <option value="L-3">dd.mm.yyyy</option>
+                <option value="B-1">yyyy/mm/dd</option>
+                <option value="B-2">yyyy-mm-dd</option>
+                <option value="B-3">yyyy.mm.dd</option>
+                <option value="O-1">mm/yyyy</option>
+              </select>
+            </span>
+          </center>
         </div>
-        <div id="container">
-            <div id="options">
-                <div class="option">
-                    <h2>Date Format</h2>
-                    <center>
-                    <span class="custom-dropdown custom-dropdown--emerald
-                        custom-dropdown--large">
-                        <select id="dateFormat" class="custom-dropdown__select custom-dropdown__select--emerald">
-                            <option value="M-1">mm/dd/yyyy</option>
-                            <option value="M-2">mm-dd-yyyy</option>
-                            <option value="M-3">mm.dd.yyyy</option>
-                            <option value="L-1">dd/mm/yyyy</option>
-                            <option value="L-2">dd-mm-yyyy</option>
-                            <option value="L-3">dd.mm.yyyy</option>
-                            <option value="B-1">yyyy/mm/dd</option>
-                            <option value="B-2">yyyy-mm-dd</option>
-                            <option value="B-3">yyyy.mm.dd</option>
-                            <option value="O-1">mm/yyyy</option>
-                        </select>
-                    </span>
-                    </center>
-                </div>
-            </div>
-            <div id="buttons">
-                <button id="saveButton" class="btn">Save</button>
-                <button id="restoreButton" class="btn">Restore default</button>
-            </div>
-        </div>
-        <script src="js/options.js"></script>
-    </body>
+      </div>
+      <div id="buttons">
+        <button id="saveButton" class="btn">Save</button>
+        <button id="restoreButton" class="btn">Restore default</button>
+      </div>
+    </div>
+    <script src="js/options.js"></script>
+  </body>
 </html>
