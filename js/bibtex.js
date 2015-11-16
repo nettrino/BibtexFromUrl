@@ -179,11 +179,15 @@ function copyToClipboard(entry, clipboard_id) {
     return;
   }
 
+  clipboardholder.style.display = "block";
   clipboardholder.value = entry;
   clipboardholder.select();
 
   result = document.execCommand("Copy");
   result_dom = document.getElementById("result");
-  if (result && result_dom)
+  if (result) {
     clipboardholder.style.display = "none";
+    if (result_dom)
+      result_dom.innerHTML = '<span>copied to clipboard!</span>';
+  }
 }
