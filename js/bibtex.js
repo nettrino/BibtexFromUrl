@@ -162,7 +162,7 @@ function generateBibTeXEntry(tabTitle, tabUrl, format)
   entry += "howpublished = {\\url{" + tabUrl + "}},\n";
   entry += "month = {},\n";
   entry += "year = {},\n";
-  entry += "note = {(Visited on ";
+  entry += "note = {(Accessed  on ";
   entry += formatDate(new Date(), format) + ")}\n";
   entry += "}";
 
