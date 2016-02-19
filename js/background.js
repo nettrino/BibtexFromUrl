@@ -23,7 +23,6 @@ https://github.com/dangmai/escape-latex
 */
 
 
-
 chrome.contextMenus.onClicked.addListener(function(info, tab)
 {
   var bib_id, gen_div, tab_info, gen_bib, al_bib, del_div;
@@ -64,7 +63,7 @@ chrome.contextMenus.onClicked.addListener(function(info, tab)
     chrome.tabs.executeScript(tab.id, { code: gen_div }, function(){
       chrome.tabs.executeScript(tab.id, { code: tab_info }, function(){
         chrome.tabs.executeScript(tab.id, { code: copy_bib }, function(){
-          chrome.tabs.executeScript(tab.id, {code: del_div});
+          setTimeout(chrome.tabs.executeScript(tab.id, {code: del_div}), 1000);
         });
       });
     });

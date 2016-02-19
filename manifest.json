@@ -4,7 +4,7 @@
   "name": "BibTeX entry from URL",
   "short_name": "url_to_bib",
   "description": "This extension provides a BibTeX reference for the active URL",
-  "version": "1.2.8",
+  "version": "1.2.9",
 
   "options_page": "options.html",
   "options_ui": {
