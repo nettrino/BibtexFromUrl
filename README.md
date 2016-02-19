@@ -11,5 +11,5 @@ For http://developer.chrome.com/extensions/packaging.html we get:
     howpublished = {\url{https://developer.chrome.com/extensions/packaging}},
     month = {},
     year = {},
-    note = {(Visited on 06/10/2014)}
+    note = {(Accessed on 06/10/2014)}
     }
