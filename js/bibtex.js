@@ -153,7 +153,7 @@ function generateBibTeXEntry(tabTitle, tabUrl, format)
 {
   var abbr, suffix, entry, result;
 
-  abbr = tabTitle.substring(0, 5);
+  abbr = tabTitle.split(' ').join('').substring(0, 5);
   suffix = Math.floor(Math.random() * 100);
   //create the entry
   entry = "@misc{" + lescape(abbr) + suffix.toString() + ":online,\n";
