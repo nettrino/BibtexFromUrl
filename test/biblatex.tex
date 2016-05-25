@@ -1,0 +1,29 @@
+\documentclass[a4paper,
+oneside,
+12pt,
+bibliography=totocnumbered,
+listof=totocnumbered
+]{scrreprt}
+\usepackage[english, ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[babel,german=quotes]{csquotes}
+\usepackage[automark]{scrpage2}
+\usepackage[]{url}
+
+
+\usepackage[backend=biber, style=authoryear, urldate=comp, dateabbrev=false]{biblatex}
+\bibliography{biblatex}
+\DeclareFieldFormat{date}{#1}    % Not sure with this one
+\DeclareFieldFormat{title}{#1\addcomma}
+\DeclareFieldFormat{url}{\newline\bibstring{URL}\addcolon\addspace\url{#1}}
+\DeclareFieldFormat{urltime}{#1}
+\DeclareFieldFormat{urldate}{\addcomma\space#1\addcomma\addspace\printfield{urltime}}
+
+
+
+\begin{document}
+atex is science \cite{stack} ~\cite{html-11:online} ~\cite{HTMLD52:online}
+
+\printbibliography
+
+\end{document}

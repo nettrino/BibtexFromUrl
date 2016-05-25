@@ -1,30 +1,44 @@
 LATEX=pdflatex
 BIBTEX=bibtex
+BIBER=biber
 RM=rm -f
 
 ##############################
-TARGET=test
+TARGET1=test
+TARGET2=biblatex
 ##############################
 
-TEXFILES=*.tex
-BIBFILES=*.bib
-#FIGURES=figures/*.pdf
+TEXFILES1=test.tex
+BIBFILES1=test.bib
 
-.PHONY: dvi ps pdf figures
+TEXFILES2=biblatex.tex
+BIBFILES2=biblatex.bib
 
-all: $(TARGET).pdf
+.PHONY: dvi ps pdf figures misc online
 
-#figures:
-#	$(MAKE) -C figs
+all: misc online
 
-${TARGET}.bbl: $(BIBFILES) $(FIGURES)
-	$(LATEX) $(TARGET)
-	$(BIBTEX) $(TARGET)
-	$(LATEX) $(TARGET)
+misc: $(TARGET1).pdf
+online: $(TARGET2).pdf
 
-$(TARGET).pdf: $(TEXFILES) $(TARGET).bbl
-	$(LATEX) $(TARGET)
+${TARGET1}.bbl: $(BIBFILES1)
+	$(LATEX) $(TARGET1)
+	$(BIBTEX) $(TARGET1)
+	$(LATEX) $(TARGET1)
+
+$(TARGET1).pdf: $(TEXFILES1) $(TARGET1).bbl
+	$(LATEX) $(TARGET1)
+
+${TARGET2}.bbl: $(BIBFILES2)
+	$(LATEX) $(TARGET2)
+	$(BIBER) $(TARGET2)
+	$(LATEX) $(TARGET2)
+
+$(TARGET2).pdf: $(TEXFILES2) $(TARGET2).bbl
+	$(LATEX) $(TARGET2)
+	$(BIBER) $(TARGET2)
+	$(LATEX) $(TARGET2)
 
 clean:
-	$(RM) $(addprefix $(TARGET)., aux bbl blg log dvi toc lof out ps pdf)
-#	$(MAKE) -C figs clean
+	$(RM) $(addprefix $(TARGET1)., aux bbl blg log dvi toc lof out ps pdf bcf run.xml)
+	$(RM) $(addprefix $(TARGET2)., aux bbl blg log dvi toc lof out ps pdf bcf run.xml)
