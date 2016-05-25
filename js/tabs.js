@@ -27,7 +27,11 @@ chrome.tabs.query({'active': true, 'currentWindow': true}, function (tab) {
   if (tab) {
     copyToClipboard(generateBibTeXEntry(tab[0].title,
                                         tab[0].url,
-                                        localStorage["date.format"]),
+                                        localStorage["format_bx"],
+                                        localStorage["date_sel"],
+                                        localStorage["empty_bx"],
+                                        localStorage["acc_bx"]
+                                        ),
                     "clipboardholder");
   } else {
     document.getElementById("result").innerHTML =

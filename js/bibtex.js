@@ -216,21 +216,54 @@ function lescape(str)
   return result;
 }
 
-function generateBibTeXEntry(tabTitle, tabUrl, format)
+function generateBibTeXEntry(tabTitle, tabUrl, online_not_misc,
+        date_format, omit_empty, include_accessed)
 {
   var abbr, suffix, entry, result;
 
   abbr = tabTitle.split(' ').join('').substring(0, 5);
   suffix = Math.floor(Math.random() * 100);
-  //create the entry
-  entry = "@misc{" + bescape(abbr) + suffix.toString() + ":online,\n";
-  entry += "author = {},\n";
+
+  // entry name
+  if (online_not_misc == "true") {
+      entry = "@online{" + bescape(abbr) + suffix.toString() + ":online,\n";
+  } else {
+      entry = "@misc{" + bescape(abbr) + suffix.toString() + ":online,\n";
+  }
+
+  // author
+  if (omit_empty == "false") {
+      entry += "author = {},\n";
+  }
+
+  // title
   entry += "title = {" + lescape(tabTitle) + "},\n";
-  entry += "howpublished = {\\url{" + tabUrl + "}},\n";
-  entry += "month = {},\n";
-  entry += "year = {},\n";
-  entry += "note = {(Accessed on ";
-  entry += formatDate(new Date(), format) + ")}\n";
+
+  // url
+  if (online_not_misc == "true") {
+      entry += "url = {" + tabUrl + "},\n";
+  } else {
+      entry += "howpublished = {\\url{" + tabUrl + "}},\n";
+  }
+
+  // month and year
+  if (omit_empty == "false") {
+      entry += "month = {},\n";
+      entry += "year = {},\n";
+  }
+
+  // urldate
+  if (include_accessed == "true") {
+      if (online_not_misc == "true") {
+          entry += "urldate = {";
+          entry += formatDate(new Date(), date_format) + "}\n";
+      } else {
+          entry += "note = {(Accessed on ";
+          entry += formatDate(new Date(), date_format) + ")}\n";
+      }
+  }
+
+  // done!
   entry += "}";
 
   return entry;

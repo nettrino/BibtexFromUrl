@@ -45,16 +45,23 @@ chrome.contextMenus.onClicked.addListener(function(info, tab)
     'document.body.appendChild(d);'
     ].join("\n");
 
-  tab_info = "var tab_info= {title:'"     +
-              tab.title                   +
-              "',url:'"                   +
-              tab.url                     +
-              "',format:'"                +
-              localStorage["date.format"] +
+  tab_info = "var tab_info= {title:'"   +
+              tab.title                 +
+              "',url:'"                 +
+              tab.url                   +
+              "',bib_format:'"          +
+              localStorage["format_bx"] +
+              "',date_format:'"         +
+              localStorage["date_sel"]  +
+              "',omit_empty:'"          +
+              localStorage["empty_bx"]  +
+              "',incl_acc:'"            +
+              localStorage["acc_bx"]    +
               "'};";
 
   gen_bib = "generateBibTeXEntry(tab_info.title," +
-            "tab_info.url,tab_info.format)";
+            "tab_info.url, tab_info.bib_format, tab_info.date_format," +
+            "tab_info.omit_empty, tab_info.incl_acc)";
   copy_bib = 'copyToClipboard(' + gen_bib + ', "' + bib_id + '");';
   del_div = 'var div = document.getElementById("' + bib_id + '");\n' +
              'div.parentNode.removeChild(div)';
