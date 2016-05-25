@@ -1,7 +1,16 @@
 BibTeX entry from URL
 =============
 
-A simple chrome extension that creates a BibTeX entry for the URL in the current tab. Tab's title and url are automatically copied to be used in your LaTeX documents. Author needs to be filled in manually.
+A simple chrome extension that creates a BibTeX entry for the URL in the current
+tab. Supports @misc and @online entries.
+
+* Tab's title and URL are automatically copied to be used in your LaTeX
+  documents.
+
+* "Accessed on" field (resp. "urldate" for @online entries) is optional
+
+* Author, year and month info need to be filled-in manually, and can optionally
+  be omitted.
 
 For http://developer.chrome.com/extensions/packaging.html we get:
 
