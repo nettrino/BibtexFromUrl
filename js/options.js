@@ -21,32 +21,35 @@ function loadOpt() {
         }
     }
 
-    if (localStorage["empty_bx"]) {
-        document
-            .getElementById("empty_bx")
-            .checked = (localStorage.getItem("empty_bx") == "true");
-    } else {
+    var omitEmpty = localStorage["empty_bx"]
+    if (!omitEmpty || (omitEmpty != "true" && omitEmpty != "false")) {
+        omitEmpty = "false";
         localStorage.setItem("empty_bx", "false");
-        document.getElementById("empty_bx").checked = false;
     }
 
-    if (localStorage["format_bx"]) {
-        document
-            .getElementById("format_bx")
-            .checked = (localStorage.getItem("format_bx") == "true");
-    } else {
+    var online = localStorage["format_bx"]
+    if (!online || (online != "true" && online != "false")) {
+        online = "false";
         localStorage.setItem("format_bx", "false");
-        document.getElementById("format_bx").checked = false;
     }
 
-    if (localStorage["acc_bx"]) {
-        document
-            .getElementById("acc_bx")
-            .checked = (localStorage.getItem("acc_bx") == "true");
-    } else {
+    var incl_acc = localStorage["acc_bx"]
+    if (!incl_acc || (incl_acc != "true" && incl_acc != "false")) {
+        incl_acc = "true";
         localStorage.setItem("acc_bx", "true");
-        document.getElementById("acc_bx").checked = true;
     }
+
+    document
+        .getElementById("empty_bx")
+        .checked = (localStorage.getItem("empty_bx") == "true");
+
+    document
+        .getElementById("format_bx")
+        .checked = (localStorage.getItem("format_bx") == "true");
+
+    document
+        .getElementById("acc_bx")
+        .checked = (localStorage.getItem("acc_bx") == "true");
 }
 
 function saveEmpty() {

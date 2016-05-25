@@ -232,7 +232,7 @@ function generateBibTeXEntry(tabTitle, tabUrl, online_not_misc,
   }
 
   // author
-  if (omit_empty == "false") {
+  if (omit_empty != "true") {
       entry += "author = {},\n";
   }
 
@@ -247,13 +247,13 @@ function generateBibTeXEntry(tabTitle, tabUrl, online_not_misc,
   }
 
   // month and year
-  if (omit_empty == "false") {
+  if (omit_empty != "true") {
       entry += "month = {},\n";
       entry += "year = {},\n";
   }
 
   // urldate
-  if (include_accessed == "true") {
+  if (include_accessed != "false") {
       if (online_not_misc == "true") {
           entry += "urldate = {";
           entry += formatDate(new Date(), date_format) + "}\n";
