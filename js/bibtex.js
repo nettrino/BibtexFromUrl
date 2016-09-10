@@ -221,7 +221,7 @@ function generateBibTeXEntry(tabTitle, tabUrl, online_not_misc,
 {
   var abbr, suffix, entry, result;
 
-  abbr = tabTitle.split(' ').join('').substring(0, 5);
+  abbr = tabTitle.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/\s]/g,'').substring(0, 8);
   suffix = Math.floor(Math.random() * 100);
 
   // entry name
