@@ -1,4 +1,5 @@
 var defaultFormat = "US-1";
+var defaultFormattingStyle = "wikipedia";
 function loadOpt() {
     var dateFormat = localStorage["date_sel"];
 
@@ -12,9 +13,9 @@ function loadOpt() {
         dateFormat = defaultFormat;
     }
 
-    var select = document.getElementById("date_sel");
-    for (var i = 0; i < select.children.length; i++) {
-        var child = select.children[i];
+    var selectDateFormat = document.getElementById("date_sel");
+    for (var i = 0; i < selectDateFormat.children.length; i++) {
+        var child = selectDateFormat.children[i];
         if (child.value == dateFormat) {
             child.selected = "true";
             break;
@@ -27,11 +28,23 @@ function loadOpt() {
         localStorage.setItem("empty_bx", "false");
     }
 
-    var online = localStorage["format_bx"]
-    if (!online || (online != "true" && online != "false")) {
-        online = "false";
-        localStorage.setItem("format_bx", "false");
+    var formattingStyle = localStorage["format_bx"]
+
+    if (!formattingStyle ||
+	(formattingStyle != "wikipedia" && formattingStyle != "misc" &&
+	 formattingStyle != "online")) {
+	formattingStyle = defaultFormattingStyle;
     }
+
+    var selectFormattingStyle = document.getElementById("format_bx");
+    for (var i = 0; i < selectFormattingStyle.children.length; i++) {
+	var child = selectFormattingStyle.children[i];
+	if (child.value == formattingStyle) {
+	    child.selected = "true";
+	    break;
+	}
+    }
+    
 
     var incl_acc = localStorage["acc_bx"]
     if (!incl_acc || (incl_acc != "true" && incl_acc != "false")) {
@@ -42,10 +55,6 @@ function loadOpt() {
     document
         .getElementById("empty_bx")
         .checked = (localStorage.getItem("empty_bx") == "true");
-
-    document
-        .getElementById("format_bx")
-        .checked = (localStorage.getItem("format_bx") == "true");
 
     document
         .getElementById("acc_bx")
@@ -60,10 +69,9 @@ function saveEmpty() {
 }
 
 function saveFormat() {
-    if (document.getElementById("format_bx").checked)
-        localStorage.setItem("format_bx", "true");
-    else
-        localStorage.setItem("format_bx", "false");
+    var select = document.getElementById("format_bx");
+    var formattingStyle = select.children[select.selectedIndex].value;
+    localStorage["format_bx"] = formattingStyle;
 }
 
 function saveAcc() {
