@@ -216,7 +216,7 @@ function lescape(str)
   return result;
 }
 
-function generateBibTeXEntry(tabTitle, tabUrl, online_not_misc,
+function generateBibTeXEntry(tabTitle, tabUrl, formatting_style,
         date_format, omit_empty, include_accessed)
 {
   var abbr, suffix, entry, result;
@@ -225,26 +225,39 @@ function generateBibTeXEntry(tabTitle, tabUrl, online_not_misc,
   suffix = Math.floor(Math.random() * 100);
 
   // entry name
-  if (online_not_misc == "true") {
-      entry = "@online{" + bescape(abbr) + suffix.toString() + ":online,\n";
-  } else {
+  switch (formatting_style)
+  {
+  case "wikipedia":
       entry = "@misc{" + bescape(abbr) + suffix.toString() + ":online,\n";
+      break;
+  case "misc":
+      entry = "@misc{" + bescape(abbr) + suffix.toString() + ":online,\n";
+      break;
+  case "online":
+      entry = "@online{" + bescape(abbr) + suffix.toString() + ":online,\n";
+      break;
   }
-
   // author
   if (omit_empty != "true") {
       entry += "author = {},\n";
   }
 
   // title
-  entry += "title = {" + lescape(tabTitle) + "},\n";
+  entry += "  title = {" + lescape(tabTitle) + "},\n";
 
   // url
-  if (online_not_misc == "true") {
-      entry += "url = {" + tabUrl + "},\n";
-  } else {
+  switch (formatting_style)
+  {
+  case "wikipedia":
+      entry += "  url = \"" + tabUrl + "\",\n";
+      break;
+  case "misc":
       entry += "howpublished = {\\url{" + tabUrl + "}},\n";
-  }
+      break;
+  case "online":
+      entry += "url = {" + tabUrl + "},\n";
+      break;
+  }  
 
   // month and year
   if (omit_empty != "true") {
@@ -254,21 +267,29 @@ function generateBibTeXEntry(tabTitle, tabUrl, online_not_misc,
 
   // urldate
   if (include_accessed != "false") {
-      if (online_not_misc == "true") {
-          entry += "urldate = {";
-          entry += formatDate(new Date(), date_format) + "}\n";
-      } else {
+
+      switch (formatting_style)
+      {
+      case "wikipedia":
+          entry += "  note = \"[Online; accessed ";
+          entry += formatDate(new Date(), date_format) + "]\"\n";
+	  break;
+      case "misc":
           entry += "note = {(Accessed on ";
           entry += formatDate(new Date(), date_format) + ")}\n";
-      }
-  }
+	  break;
+      case "online":
+          entry += "urldate = {";
+          entry += formatDate(new Date(), date_format) + "}\n";
+	  break;
+     }
 
   // done!
   entry += "}";
 
   return entry;
+  }
 }
-
 //copy reference to clipboard
 function copyToClipboard(entry, clipboard_id) {
   var clipboardholder, result, result_dom;
