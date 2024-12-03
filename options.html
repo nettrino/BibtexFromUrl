@@ -1,39 +1,53 @@
 <html>
-    <head>
-        <title>BibTeXFromURL Options</title>
-    </head>
-    <body>
-        <center>
-            Omit empty fields
-            <input type="checkbox" id="empty_bx" name="empty_f"/>
-            <p>
+  <head>
+    <title>BibTeXFromURL Options</title>
+    <style>
+      #optionsForm label {
+        display: block;
+        margin-bottom: 10px; /* Optional for spacing */
+      }
+    </style>
+  </head>
+  <body>
+    <script defer src="options.js" type="module"></script>
+    <form id="optionsForm">
+      <label for="includeAccessDate">
+        <input
+          type="checkbox"
+          name="includeAccessDate"
+          id="includeAccessDate"
+        />
+        Include date accessed for the URL
+      </label>
+      <br />
+      <label for="omitEmptyFields">
+        <input type="checkbox" name="omitEmptyFields" id="omitEmpty" />
+        Omit empty placeholder fields (e.g., `author:{}`)
+      </label>
+      <label for="formattingStyle">
+        Entry formatting style
+        <select id="formattingStyle" name="formattingStyle">
+          <option value="wikipedia" selected>@misc wikipedia style</option>
+          <option value="misc">@misc style</option>
+          <option value="online">@online style</option>
+        </select>
+      </label>
 
-            Include page access date
-            <input type="checkbox" id="acc_bx" name="accessed_f"/>
-            <p>
-
-            Entry formatting style
-	    <select id="format_bx">
-	    	<option value="wikipedia">@misc wikipedia style</option>
-	        <option value="misc">@misc style</option>
-		<option value="online">@online style</option>
-            </select>
-            <p>
-
-            Date Format
-            <select id="date_sel">
-                <option value="M-1">mm/dd/yyyy</option>
-                <option value="M-2">mm-dd-yyyy</option>
-                <option value="M-3">mm.dd.yyyy</option>
-                <option value="L-1">dd/mm/yyyy</option>
-                <option value="L-2">dd-mm-yyyy</option>
-                <option value="L-3">dd.mm.yyyy</option>
-                <option value="B-1">yyyy/mm/dd</option>
-                <option value="B-2">yyyy-mm-dd</option>
-                <option value="B-3">yyyy.mm.dd</option>
-                <option value="O-1">mm/yyyy</option>
-            </select>
-        </center>
-        <script src="js/options.js"></script>
-    </body>
+      <label for="dateFormat">
+        Date format
+        <select id="dateFormat" name="dateFormat">
+          <option value="M-1">mm/dd/yyyy</option>
+          <option value="M-2">mm-dd-yyyy</option>
+          <option value="M-3">mm.dd.yyyy</option>
+          <option value="L-1">dd/mm/yyyy</option>
+          <option value="L-2">dd-mm-yyyy</option>
+          <option value="L-3">dd.mm.yyyy</option>
+          <option value="B-1">yyyy/mm/dd</option>
+          <option value="B-2" selected>yyyy-mm-dd</option>
+          <option value="B-3">yyyy.mm.dd</option>
+          <option value="O-1">mm/yyyy</option>
+        </select>
+      </label>
+    </form>
+  </body>
 </html>
