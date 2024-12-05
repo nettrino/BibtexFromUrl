@@ -2,14 +2,15 @@ const defaultDateFormat = "B-2";
 const defaultFormattingStyle = "wikipedia";
 const defaultOmitEmpty = false;
 const defaultIncludeAccessed = true;
+const defaultNoInferAuthor = false;
+const defaultNoInferDate = false;
 
 var dateFormat = defaultDateFormat;
 var optOmitEmpty = defaultOmitEmpty;
 var optIncludeAccessed = defaultIncludeAccessed;
 var optFormattingStyle = defaultFormattingStyle;
-
-var currentAuthor = "";
-var currentDate = "";
+var optNoInferAuthor = defaultNoInferAuthor;
+var optNoInferDate = defaultNoInferDate;
 
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === "sync" && changes.options?.newValue) {
@@ -17,6 +18,8 @@ chrome.storage.onChanged.addListener((changes, area) => {
     const includeAccessDate = Boolean(
       changes.options.newValue.includeAccessDate,
     );
+    const noInferAuthor = !Boolean(changes.options.newValue.noInferAuthor);
+    const noInferDate = !Boolean(changes.options.newValue.noInferDate);
     const selectedDateFormat =
       changes.options.newValue.dateFormat || defaultDateFormat;
     const selectedFormattingStyle =
@@ -26,6 +29,8 @@ chrome.storage.onChanged.addListener((changes, area) => {
     optOmitEmpty = omitEmpty;
     optIncludeAccessed = includeAccessDate;
     optFormattingStyle = selectedFormattingStyle;
+    optNoInferDate = noInferDate;
+    optNoInferAuthor = noInferAuthor;
   }
 });
 
@@ -34,31 +39,8 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.set({ optOmitEmpty });
   chrome.storage.sync.set({ optIncludeAccessed });
   chrome.storage.sync.set({ optFormattingStyle });
-});
-
-// When the browser action is clicked, `addToClipboard()` will use an offscreen
-// document to write the value of `textToCopy` to the system clipboard.
-chrome.action.onClicked.addListener(async (tab) => {
-  try {
-    const title = tab.title || "Untitled";
-    const url = tab.url || "No URL";
-
-    console.log("generating entry");
-    await addToClipboard(
-      generateBibTeXEntry(
-        title,
-        url,
-        currentAuthor,
-        currentDate,
-        optFormattingStyle,
-        dateFormat,
-        optOmitEmpty,
-        optIncludeAccessed,
-      ),
-    );
-  } catch (error) {
-    console.error("Failed to copy tab info:", error);
-  }
+  chrome.storage.sync.set({ optNoInferAuthor });
+  chrome.storage.sync.set({ optNoInferDate });
 });
 
 function safeExtractString(value) {
@@ -83,48 +65,54 @@ function safeExtractString(value) {
   return value ? value.toString() : ""; // If it's not an object or array, return it as string
 }
 
-// Listen for metadata messages from content.js
-chrome.runtime.onMessage.addListener((message, sender) => {
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+  if (message.type == "generateBibtex") {
+    if (message.tab.id) {
+      try {
+        // Inject content.js into the active tab
+        chrome.scripting.executeScript({
+          target: { tabId: message.tab.id },
+          files: ["content.js"],
+        });
+      } catch (error) {
+        console.error("Failed to inject content script:", error);
+      }
+    }
+  }
   if (message.type === "metadata") {
-    // Build the clipboard content
-    const clipboardContent = `
-      Title: ${message.title || "Untitled"}
-      URL: ${message.url || "No URL"}
-      Author: ${message.author || "Unknown"}
-      Date: ${message.date || "Unknown"}
-    `.trim();
+    const title = message.title || "Untitled";
+    const url = message.url || "No URL";
+    const mauthor = message.author || "";
+    const mdate = message.date || "Unknown";
 
-    if (message.author != "") {
-      currentAuthor = safeExtractString(message.author);
+    var currentAuthor = "";
+    if (mauthor != "") {
+      currentAuthor = safeExtractString(mauthor);
     } else {
       currentAuthor = "";
     }
-    currentDate = message.date;
-    // console.log("currentAuthor", currentAuthor);
-    // console.log("currentDate", currentDate);
-    // console.log("parsed info from page", clipboardContent);
-  }
-});
-
-// Handle extension icon click
-chrome.action.onClicked.addListener(async (tab) => {
-  if (tab.id) {
+    const author = !optNoInferAuthor ? "" : currentAuthor;
+    const date = !optNoInferDate ? "" : mdate;
     try {
-      // Inject content.js into the active tab
-      await chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        files: ["content.js"],
-      });
+      addToClipboard(
+        generateBibTeXEntry(
+          title,
+          url,
+          author,
+          date,
+          optFormattingStyle,
+          dateFormat,
+          optOmitEmpty,
+          optIncludeAccessed,
+        ),
+      );
     } catch (error) {
-      console.error("Failed to inject content script:", error);
+      console.error("Failed to copy tab info:", error);
     }
+    // sendResponse({ response: "copied" });
   }
 });
 
-// Solution 1 - As of Jan 2023, service workers cannot directly interact with
-// the system clipboard using either `navigator.clipboard` or
-// `document.execCommand()`. To work around this, we'll create an offscreen
-// document and pass it the data we want to write to the clipboard.
 async function addToClipboard(value) {
   await chrome.offscreen.createDocument({
     url: "offscreen.html",
