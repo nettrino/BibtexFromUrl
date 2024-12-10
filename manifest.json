@@ -3,7 +3,7 @@
   "name": "BibTeX entry from URL",
   "short_name": "url_to_bib",
   "description": "This extension provides a BibTeX reference for the active URL",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "background": {
     "service_worker": "background.js"
   },

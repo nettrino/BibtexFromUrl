@@ -18,8 +18,8 @@ chrome.storage.onChanged.addListener((changes, area) => {
     const includeAccessDate = Boolean(
       changes.options.newValue.includeAccessDate,
     );
-    const noInferAuthor = !Boolean(changes.options.newValue.noInferAuthor);
-    const noInferDate = !Boolean(changes.options.newValue.noInferDate);
+    const noInferAuthor = Boolean(changes.options.newValue.noInferAuthor);
+    const noInferDate = Boolean(changes.options.newValue.noInferDate);
     const selectedDateFormat =
       changes.options.newValue.dateFormat || defaultDateFormat;
     const selectedFormattingStyle =
@@ -91,8 +91,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     } else {
       currentAuthor = "";
     }
-    const author = !optNoInferAuthor ? "" : currentAuthor;
-    const date = !optNoInferDate ? "" : mdate;
+    const author = optNoInferAuthor ? "" : currentAuthor;
+    const date = optNoInferDate ? "" : mdate;
     try {
       addToClipboard(
         generateBibTeXEntry(
