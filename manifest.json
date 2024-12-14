@@ -3,7 +3,7 @@
   "name": "BibTeX entry from URL",
   "short_name": "url_to_bib",
   "description": "This extension provides a BibTeX reference for the active URL",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "background": {
     "service_worker": "background.js"
   },
@@ -12,7 +12,7 @@
     "page": "options.html"
   },
   "action": {
-    "default_popup": "popup.html",
+    "default_title": "BibTeX entry from URL",
     "default_icon": {
       "30": "images/icon30.png"
     }
@@ -22,13 +22,6 @@
     "48": "images/icon48.png",
     "30": "images/icon30.png"
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "run_at": "document_idle"
-    }
-  ],
   "permissions": [
     "activeTab",
     "storage",

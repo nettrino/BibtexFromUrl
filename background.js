@@ -65,21 +65,21 @@ function safeExtractString(value) {
   return value ? value.toString() : ""; // If it's not an object or array, return it as string
 }
 
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-  if (message.type == "generateBibtex") {
-    if (message.tab.id) {
-      try {
-        // Inject content.js into the active tab
-        chrome.scripting.executeScript({
-          target: { tabId: message.tab.id },
-          files: ["content.js"],
-        });
-      } catch (error) {
-        console.error("Failed to inject content script:", error);
-      }
-    }
+chrome.action.onClicked.addListener(async (tab) => {
+  if (tab && tab.id) {
+    try {
+      // Inject a script into the active tab
+      await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        files: ["content.js"], // File containing the code to execute
+      });
+    } catch (error) {}
   }
+});
+
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.type === "metadata") {
+    console.log("received metadata");
     const title = message.title || "Untitled";
     const url = message.url || "No URL";
     const mauthor = message.author || "";
@@ -106,10 +106,18 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
           optIncludeAccessed,
         ),
       );
+      chrome.action.setIcon({ path: { 30: "images/icon30copied.png" } }, () => {
+        // Wait 3 seconds and then revert to "icon30.png"
+        setTimeout(() => {
+          chrome.action.setIcon(
+            { path: { 30: "images/icon30.png" } },
+            () => {},
+          );
+        }, 2000);
+      });
     } catch (error) {
       console.error("Failed to copy tab info:", error);
     }
-    // sendResponse({ response: "copied" });
   }
 });
 
