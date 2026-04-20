@@ -43,6 +43,18 @@
         </select>
       </label>
 
+      <hr />
+      <strong>AI Features</strong>
+      <label for="enableAI">
+        <input type="checkbox" name="enableAI" id="enableAI" />
+        Use on-device AI to enhance metadata
+      </label>
+      <div id="aiWarning" style="display: none; color: #666; font-size: 0.9em; margin-left: 20px; margin-bottom: 10px;">
+        AI enhancement adds 1-5 seconds delay before copying. Requires Chrome 138+ with Gemini Nano model downloaded.
+      </div>
+      <div id="aiStatus" style="color: #888; font-size: 0.85em; margin-left: 20px; margin-bottom: 10px;"></div>
+      <hr />
+
       <label for="dateFormat">
         Date format
         <select id="dateFormat" name="dateFormat">

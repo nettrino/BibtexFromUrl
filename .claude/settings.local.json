@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -sL https://developer.chrome.com/docs/ai/built-in)",
+      "Bash(curl -sL https://developer.chrome.com/docs/ai/prompt-api)",
+      "Bash(curl -sL https://developer.chrome.com/docs/ai/summarizer-api)",
+      "WebSearch",
+      "WebFetch(domain:developer.chrome.com)",
+      "WebFetch(domain:medium.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(curl:*)"
+    ]
+  }
+}

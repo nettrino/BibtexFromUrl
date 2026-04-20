@@ -1,8 +1,5 @@
 (() => {
   try {
-    // FIXME save this per tab url because otherwise
-    // just by visiting another tab we might have
-    // state from another URL
     let author = null;
     let date = null;
 
@@ -12,7 +9,6 @@
       try {
         const jsonData = JSON.parse(jsonLD.textContent);
         if (jsonData.author) {
-          // Handle cases where the author is an object, e.g., { name: "John Doe", url: "..." }
           author = jsonData.author.name
             ? jsonData.author.name
             : jsonData.author;
@@ -75,15 +71,7 @@
       if (microdataDate) date = microdataDate;
     }
 
-    // 6. Try JavaScript embedded variables (window.pageData or similar)
-    if (!author || !date) {
-      if (window.pageData) {
-        author = window.pageData.author;
-        date = window.pageData.publishedDate;
-      }
-    }
-
-    // 7. Try custom data attributes
+    // 6. Try custom data attributes
     if (!author || !date) {
       const authorFromDataAttr = document
         .querySelector("[data-author]")
@@ -95,14 +83,49 @@
       if (dateFromDataAttr) date = dateFromDataAttr;
     }
 
-    // Send metadata to the background script
+    const title = document.title;
+    const url = window.location.href;
+
+    // Phase 1: send heuristic metadata immediately
     chrome.runtime.sendMessage({
       type: "metadata",
-      title: document.title,
-      url: window.location.href,
+      title,
+      url,
       author,
       date,
     });
+
+    // Phase 2: AI enhancement (async, non-blocking)
+    (async () => {
+      try {
+        const data = await chrome.storage.sync.get("options");
+        const enableAI = data.options?.enableAI === true;
+        if (!enableAI) return;
+
+        const available = await checkAIAvailability();
+        if (!available) return;
+
+        // textContent avoids layout reflow unlike innerText
+        const pageText = (document.body.textContent || "").substring(0, 2000);
+        const aiResult = await extractWithAI(pageText, { title, author, date });
+        if (!aiResult) return;
+
+        const enriched = {
+          type: "metadata-ai",
+          title,
+          url,
+          author: author || aiResult.author || "",
+          date: date || aiResult.date || "",
+          publicationType: aiResult.publicationType || null,
+          abstract: aiResult.abstract || null,
+          citationKey: aiResult.citationKey || null,
+        };
+
+        chrome.runtime.sendMessage(enriched);
+      } catch (e) {
+        console.error("AI enhancement failed:", e);
+      }
+    })();
   } catch (error) {
     console.error("Error extracting metadata:", error);
     chrome.runtime.sendMessage({
