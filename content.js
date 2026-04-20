@@ -1,13 +1,19 @@
+// @ts-check
+/// <reference path="./types.js" />
+/// <reference path="./chrome.d.ts" />
+
 (() => {
   try {
+    /** @type {string | null} */
     let author = null;
+    /** @type {string | null} */
     let date = null;
 
     // 1. Try <script type="application/ld+json"> (JSON-LD)
     const jsonLD = document.querySelector('script[type="application/ld+json"]');
     if (jsonLD) {
       try {
-        const jsonData = JSON.parse(jsonLD.textContent);
+        const jsonData = JSON.parse(jsonLD.textContent || "");
         if (jsonData.author) {
           author = jsonData.author.name
             ? jsonData.author.name
@@ -87,13 +93,15 @@
     const url = window.location.href;
 
     // Phase 1: send heuristic metadata immediately
-    chrome.runtime.sendMessage({
-      type: "metadata",
-      title,
-      url,
-      author,
-      date,
-    });
+    chrome.runtime.sendMessage(
+      /** @type {MetadataMessage} */ ({
+        type: "metadata",
+        title,
+        url,
+        author,
+        date,
+      }),
+    );
 
     // Phase 2: AI enhancement (async, non-blocking)
     (async () => {
@@ -107,9 +115,11 @@
 
         // textContent avoids layout reflow unlike innerText
         const pageText = (document.body.textContent || "").substring(0, 2000);
+        /** @type {AIResult | null} */
         const aiResult = await extractWithAI(pageText, { title, author, date });
         if (!aiResult) return;
 
+        /** @type {MetadataAIMessage} */
         const enriched = {
           type: "metadata-ai",
           title,
@@ -128,12 +138,14 @@
     })();
   } catch (error) {
     console.error("Error extracting metadata:", error);
-    chrome.runtime.sendMessage({
-      type: "metadata",
-      title: document.title,
-      url: window.location.href,
-      author: "Unknown",
-      date: "Unknown",
-    });
+    chrome.runtime.sendMessage(
+      /** @type {MetadataMessage} */ ({
+        type: "metadata",
+        title: document.title,
+        url: window.location.href,
+        author: "Unknown",
+        date: "Unknown",
+      }),
+    );
   }
 })();

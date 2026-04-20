@@ -1,3 +1,8 @@
+// @ts-check
+/// <reference path="./types.js" />
+/// <reference path="./chrome.d.ts" />
+
+/** @returns {Promise<boolean>} */
 async function checkAIAvailability() {
   try {
     if (typeof LanguageModel === "undefined") return false;
@@ -9,9 +14,16 @@ async function checkAIAvailability() {
   }
 }
 
+/**
+ * @param {string} pageText — first 2000 chars of page body
+ * @param {HeuristicMeta} heuristicMeta
+ * @returns {Promise<AIResult | null>}
+ */
 async function extractWithAI(pageText, heuristicMeta) {
+  /** @type {any} */
   let session = null;
   try {
+    /** @type {Record<string, unknown>} */
     const schema = {
       type: "object",
       properties: {
@@ -48,6 +60,7 @@ async function extractWithAI(pageText, heuristicMeta) {
       required: [],
     };
 
+    /** @type {string[]} */
     const existingFields = [];
     if (heuristicMeta.author) existingFields.push(`author: ${heuristicMeta.author}`);
     if (heuristicMeta.date) existingFields.push(`date: ${heuristicMeta.date}`);
@@ -78,7 +91,7 @@ Only include fields you are confident about. Omit fields already extracted above
         signal: controller.signal,
       });
       clearTimeout(timeout);
-      return JSON.parse(response);
+      return /** @type {AIResult} */ (JSON.parse(response));
     } catch (e) {
       clearTimeout(timeout);
       throw e;

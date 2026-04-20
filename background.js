@@ -1,18 +1,30 @@
+// @ts-check
+/// <reference path="./types.js" />
+/// <reference path="./chrome.d.ts" />
+
+/** @type {DateFormatCode} */
 const defaultDateFormat = "B-2";
+/** @type {FormattingStyle} */
 const defaultFormattingStyle = "wikipedia";
 const defaultOmitEmpty = false;
 const defaultIncludeAccessed = true;
 const defaultNoInferAuthor = false;
 const defaultNoInferDate = false;
 
+/** @type {DateFormatCode} */
 let dateFormat = defaultDateFormat;
+/** @type {boolean} */
 let optOmitEmpty = defaultOmitEmpty;
+/** @type {boolean} */
 let optIncludeAccessed = defaultIncludeAccessed;
+/** @type {FormattingStyle} */
 let optFormattingStyle = defaultFormattingStyle;
+/** @type {boolean} */
 let optNoInferAuthor = defaultNoInferAuthor;
+/** @type {boolean} */
 let optNoInferDate = defaultNoInferDate;
 
-// Track which tab we last injected into, to validate message senders
+/** @type {number | null} */
 let lastInjectedTabId = null;
 
 chrome.storage.onChanged.addListener((changes, area) => {
@@ -45,6 +57,12 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
+/**
+ * Recursively extract a display string from a value that may be a
+ * primitive, object with `.name`/`.person`, or nested array.
+ * @param {unknown} value
+ * @returns {string}
+ */
 function safeExtractString(value) {
   if (Array.isArray(value)) {
     const result = value.map((item) => safeExtractString(item)).join(", ");
@@ -52,8 +70,9 @@ function safeExtractString(value) {
   }
 
   if (value && typeof value === "object") {
-    if (typeof value.name === "string") return value.name;
-    if (typeof value.person === "string") return value.person;
+    const obj = /** @type {Record<string, unknown>} */ (value);
+    if (typeof obj.name === "string") return obj.name;
+    if (typeof obj.person === "string") return obj.person;
     return String(value);
   }
 
@@ -74,6 +93,10 @@ chrome.action.onClicked.addListener(async (tab) => {
   }
 });
 
+/**
+ * @param {MetadataMessage | MetadataAIMessage} message
+ * @param {boolean} isAI
+ */
 function handleMetadataMessage(message, isAI) {
   const title = message.title || "Untitled";
   const url = message.url || "No URL";
@@ -84,11 +107,12 @@ function handleMetadataMessage(message, isAI) {
   const author = optNoInferAuthor ? "" : currentAuthor;
   const date = optNoInferDate ? "" : mdate;
 
+  /** @type {AIFields} */
   const aiFields = isAI
     ? {
-        publicationType: message.publicationType || null,
-        abstract: message.abstract || null,
-        citationKey: message.citationKey || null,
+        publicationType: /** @type {MetadataAIMessage} */ (message).publicationType || null,
+        abstract: /** @type {MetadataAIMessage} */ (message).abstract || null,
+        citationKey: /** @type {MetadataAIMessage} */ (message).citationKey || null,
       }
     : {};
 
@@ -121,7 +145,6 @@ function handleMetadataMessage(message, isAI) {
 }
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-  // Only accept metadata messages from content scripts in tabs we injected into
   if (message.type === "metadata" || message.type === "metadata-ai") {
     if (!sender.tab || sender.tab.id !== lastInjectedTabId) return;
     const isAI = message.type === "metadata-ai";
@@ -129,8 +152,11 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   }
 });
 
+/**
+ * @param {string} value — BibTeX string to copy
+ * @returns {Promise<void>}
+ */
 async function addToClipboard(value) {
-  // Check if offscreen document already exists before creating
   const contexts = await chrome.runtime.getContexts({
     contextTypes: ["OFFSCREEN_DOCUMENT"],
   });
@@ -149,6 +175,11 @@ async function addToClipboard(value) {
   });
 }
 
+/**
+ * @param {Date} d
+ * @param {DateFormatCode} format
+ * @returns {string}
+ */
 function formatDate(d, format) {
   let month = String(d.getMonth() + 1);
   let day = String(d.getDate());
@@ -174,7 +205,13 @@ function formatDate(d, format) {
 // Shared recursive escape engine — escapeMap determines behavior
 // https://github.com/dangmai/escape-latex
 // http://www.cespedes.org/blog/85/how-to-escape-latex-special-characters
+/**
+ * @param {string} str
+ * @param {Record<string, string>} escapeMap
+ * @returns {string}
+ */
 function escapeWithMap(str, escapeMap) {
+  /** @param {string} s */
   const escapeRegExp = (s) =>
     s.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 
@@ -184,7 +221,7 @@ function escapeWithMap(str, escapeMap) {
   for (let i = 0; i < keys.length; i++) {
     const pos = str.search(keyPatterns[i]);
     if (pos !== -1) {
-      const match = str.match(keyPatterns[i]);
+      const match = /** @type {RegExpMatchArray} */ (str.match(keyPatterns[i]));
       return (
         escapeWithMap(str.slice(0, pos), escapeMap) +
         escapeMap[keys[i]] +
@@ -195,35 +232,67 @@ function escapeWithMap(str, escapeMap) {
   return str;
 }
 
+/** @type {Record<string, string>} */
 const BIBTEX_KEY_ESCAPES = {
   "{": ".", "}": ".", "\\": ".", "#": ".", $: ".",
   "%": ".", "&": ".", "^": ".", _: ".", "~": ".",
 };
 
+/** @type {Record<string, string>} */
 const LATEX_ESCAPES = {
   "{": "\\{", "}": "\\}", "\\": "\\textbackslash{}",
   "#": "\\#", $: "\\$", "%": "\\%", "&": "\\&",
   "^": "\\textasciicircum{}", _: "\\_", "~": "\\textasciitilde{}",
 };
 
+/**
+ * Escape string for BibTeX citation key — replaces special chars with dots.
+ * @param {string} str
+ * @returns {string}
+ */
 function bescape(str) {
   return escapeWithMap(str, BIBTEX_KEY_ESCAPES);
 }
 
+/**
+ * Escape string for LaTeX text fields.
+ * @param {string} str
+ * @returns {string}
+ */
 function lescape(str) {
   return escapeWithMap(str, LATEX_ESCAPES);
 }
 
-// Escape URL for safe embedding in BibTeX — strip chars that break field delimiters
+/**
+ * Escape URL for safe embedding in BibTeX — strip chars that break field delimiters.
+ * @param {string} url
+ * @returns {string}
+ */
 function escapeUrl(url) {
   return url.replace(/["{}\\]/g, encodeURIComponent);
 }
 
-// Sanitize AI-provided citation key: alphanumeric + hyphens only
+/**
+ * Sanitize AI-provided citation key: alphanumeric + hyphens only.
+ * @param {string} key
+ * @returns {string}
+ */
 function sanitizeCitationKey(key) {
   return key.replace(/[^a-zA-Z0-9\-]/g, "").substring(0, 40);
 }
 
+/**
+ * @param {string} tabTitle
+ * @param {string} tabUrl
+ * @param {string} author
+ * @param {string} date
+ * @param {FormattingStyle} formatting_style
+ * @param {DateFormatCode} date_format
+ * @param {boolean} omit_empty
+ * @param {boolean} include_accessed
+ * @param {AIFields} [aiFields]
+ * @returns {string}
+ */
 function generateBibTeXEntry(
   tabTitle,
   tabUrl,
@@ -247,7 +316,9 @@ function generateBibTeXEntry(
       ) + Math.floor(Math.random() * 100).toString();
 
   const pubType = ai.publicationType;
+  /** @type {string} */
   let entryType;
+  /** @type {string | null} */
   let extraTypeField = null;
 
   if (pubType === "article") {
@@ -307,13 +378,15 @@ function generateBibTeXEntry(
     try {
       const dateF = new Date(date);
 
-      if (isNaN(dateF)) {
+      if (isNaN(dateF.getTime())) {
         if (!omit_empty) {
           entry += "  month = {},\n";
           entry += "  year = {},\n";
         }
       } else {
+        /** @type {number | string} */
         let year = dateF.getFullYear();
+        /** @type {number | string} */
         let month = dateF.getMonth() + 1;
         if (year === 1970 && month === 1) {
           year = "";
@@ -323,7 +396,7 @@ function generateBibTeXEntry(
         entry += "  year = {" + year + "},\n";
       }
     } catch (error) {
-      console.error("Error parsing date", error.message);
+      console.error("Error parsing date", /** @type {Error} */ (error).message);
       if (!omit_empty) {
         entry += "  month = {},\n";
         entry += "  year = {},\n";

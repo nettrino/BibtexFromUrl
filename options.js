@@ -1,52 +1,63 @@
-const optionsForm = document.getElementById("optionsForm");
-const enableAICheckbox = document.getElementById("enableAI");
-const aiWarning = document.getElementById("aiWarning");
-const aiStatus = document.getElementById("aiStatus");
-const dateFormatSelect = document.getElementById("dateFormat");
-const formattingStyleSelect = document.getElementById("formattingStyle");
+// @ts-check
+/// <reference path="./types.js" />
+/// <reference path="./chrome.d.ts" />
+
+/** @type {HTMLFormElement} */
+const optionsForm = /** @type {HTMLFormElement} */ (document.getElementById("optionsForm"));
+/** @type {HTMLInputElement} */
+const enableAICheckbox = /** @type {HTMLInputElement} */ (document.getElementById("enableAI"));
+/** @type {HTMLElement} */
+const aiWarning = /** @type {HTMLElement} */ (document.getElementById("aiWarning"));
+/** @type {HTMLElement} */
+const aiStatus = /** @type {HTMLElement} */ (document.getElementById("aiStatus"));
+/** @type {HTMLSelectElement} */
+const dateFormatSelect = /** @type {HTMLSelectElement} */ (document.getElementById("dateFormat"));
+/** @type {HTMLSelectElement} */
+const formattingStyleSelect = /** @type {HTMLSelectElement} */ (document.getElementById("formattingStyle"));
 
 // Load stored options FIRST, before registering event listeners
 const data = await chrome.storage.sync.get("options");
+/** @type {Options} */
 const options = Object.assign({}, data.options);
 
 // Initialize form elements from stored state
-optionsForm.includeAccessDate.checked = Boolean(options.includeAccessDate);
-optionsForm.omitEmptyFields.checked = Boolean(options.omitEmptyFields);
-optionsForm.noInferDate.checked = Boolean(options.noInferDate);
-optionsForm.noInferAuthor.checked = Boolean(options.noInferAuthor);
+/** @type {HTMLInputElement} */ (optionsForm.elements.namedItem("includeAccessDate")).checked = Boolean(options.includeAccessDate);
+/** @type {HTMLInputElement} */ (optionsForm.elements.namedItem("omitEmptyFields")).checked = Boolean(options.omitEmptyFields);
+/** @type {HTMLInputElement} */ (optionsForm.elements.namedItem("noInferDate")).checked = Boolean(options.noInferDate);
+/** @type {HTMLInputElement} */ (optionsForm.elements.namedItem("noInferAuthor")).checked = Boolean(options.noInferAuthor);
 enableAICheckbox.checked = Boolean(options.enableAI);
 aiWarning.style.display = options.enableAI ? "block" : "none";
-dateFormatSelect.value = (options.dateFormat && options.dateFormat !== "") ? options.dateFormat : "B-2";
-formattingStyleSelect.value = (options.formattingStyle && options.formattingStyle !== "") ? options.formattingStyle : "wikipedia";
+dateFormatSelect.value = options.dateFormat || "B-2";
+formattingStyleSelect.value = options.formattingStyle || "wikipedia";
 
 // Register event listeners AFTER options are loaded — prevents partial-write race
-optionsForm.includeAccessDate.addEventListener("change", (event) => {
-  options.includeAccessDate = event.target.checked;
+/** @type {HTMLInputElement} */ (optionsForm.elements.namedItem("includeAccessDate")).addEventListener("change", (event) => {
+  options.includeAccessDate = /** @type {HTMLInputElement} */ (event.target).checked;
   chrome.storage.sync.set({ options });
 });
-optionsForm.omitEmptyFields.addEventListener("change", (event) => {
-  options.omitEmptyFields = event.target.checked;
+/** @type {HTMLInputElement} */ (optionsForm.elements.namedItem("omitEmptyFields")).addEventListener("change", (event) => {
+  options.omitEmptyFields = /** @type {HTMLInputElement} */ (event.target).checked;
   chrome.storage.sync.set({ options });
 });
-optionsForm.noInferDate.addEventListener("change", (event) => {
-  options.noInferDate = event.target.checked;
+/** @type {HTMLInputElement} */ (optionsForm.elements.namedItem("noInferDate")).addEventListener("change", (event) => {
+  options.noInferDate = /** @type {HTMLInputElement} */ (event.target).checked;
   chrome.storage.sync.set({ options });
 });
-optionsForm.noInferAuthor.addEventListener("change", (event) => {
-  options.noInferAuthor = event.target.checked;
+/** @type {HTMLInputElement} */ (optionsForm.elements.namedItem("noInferAuthor")).addEventListener("change", (event) => {
+  options.noInferAuthor = /** @type {HTMLInputElement} */ (event.target).checked;
   chrome.storage.sync.set({ options });
 });
 enableAICheckbox.addEventListener("change", (event) => {
-  options.enableAI = event.target.checked;
+  options.enableAI = /** @type {HTMLInputElement} */ (event.target).checked;
   chrome.storage.sync.set({ options });
-  aiWarning.style.display = event.target.checked ? "block" : "none";
+  aiWarning.style.display = /** @type {HTMLInputElement} */ (event.target).checked ? "block" : "none";
 });
 dateFormatSelect.addEventListener("change", (event) => {
-  options.dateFormat = event.target.value;
+  options.dateFormat = /** @type {HTMLSelectElement} */ (event.target).value;
   chrome.storage.sync.set({ options });
 });
 formattingStyleSelect.addEventListener("change", (event) => {
-  options.formattingStyle = event.target.value;
+  options.formattingStyle = /** @type {FormattingStyle} */ (/** @type {HTMLSelectElement} */ (event.target).value);
   chrome.storage.sync.set({ options });
 });
 
@@ -74,3 +85,5 @@ formattingStyleSelect.addEventListener("change", (event) => {
     aiStatus.style.color = "#c62828";
   }
 })();
+
+export {};
