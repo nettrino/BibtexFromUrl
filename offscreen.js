@@ -2,21 +2,32 @@
 /// <reference path="./types.js" />
 /// <reference path="./chrome.d.ts" />
 
+/** @type {BibtexCoreAPI} */
+const offscreenCore = BibtexCore;
+
 chrome.runtime.onMessage.addListener(handleMessages);
 
 /**
- * @param {ClipboardMessage & { target: string }} message
- * @returns {Promise<void>}
+ * @param {ClipboardMessage | LegacyOptionsRequest | CloseOffscreenRequest} message
+ * @param {chrome.runtime.MessageSender} _sender
+ * @param {(response?: LegacyOptionsResponse) => void} sendResponse
+ * @returns {boolean | void}
  */
-async function handleMessages(message) {
+function handleMessages(message, _sender, sendResponse) {
   if (message.target !== "offscreen-doc") return;
 
   switch (message.type) {
     case "copy-data-to-clipboard":
-      handleClipboardWrite(message.data);
+      void handleClipboardWrite(message.data);
+      break;
+    case "get-legacy-options":
+      sendResponse({ legacyOptions: getLegacyOptions() });
+      return true;
+    case "close-offscreen":
+      window.close();
       break;
     default:
-      console.warn(`Unexpected message type received: '${message.type}'.`);
+      console.warn("Unexpected offscreen message received.");
   }
 }
 
@@ -41,4 +52,12 @@ async function handleClipboardWrite(data) {
   } finally {
     window.close();
   }
+}
+
+/**
+ * Read pre-MV3 extension settings from extension localStorage.
+ * @returns {Options | null}
+ */
+function getLegacyOptions() {
+  return offscreenCore.parseLegacyOptions(localStorage);
 }

@@ -1,5 +1,9 @@
 // Minimal Chrome extension API stubs for ts-check — covers APIs used in this project
 
+declare function importScripts(...urls: string[]): void;
+declare const module: { exports: unknown } | undefined;
+declare const BibtexCore: BibtexCoreAPI;
+
 declare namespace chrome {
   namespace storage {
     interface StorageChange {
@@ -22,13 +26,13 @@ declare namespace chrome {
     interface MessageSender {
       tab?: { id?: number };
     }
-    function sendMessage(message: any): void;
+    function sendMessage(message: any, callback?: (response: any) => void): void;
     function getContexts(filter: { contextTypes: string[] }): Promise<any[]>;
     const onMessage: {
-      addListener(callback: (message: any, sender: MessageSender, sendResponse: (response?: any) => void) => void): void;
+      addListener(callback: (message: any, sender: MessageSender, sendResponse: (response?: any) => void) => boolean | void): void;
     };
     const onInstalled: {
-      addListener(callback: () => void): void;
+      addListener(callback: (details?: { reason?: string }) => void): void;
     };
   }
 
@@ -40,12 +44,12 @@ declare namespace chrome {
   }
 
   namespace scripting {
-    function executeScript(injection: { target: { tabId: number }; files: string[] }): Promise<any>;
+    function executeScript(injection: { target: { tabId: number }; files?: string[]; func?: (...args: any[]) => unknown; args?: any[] }): Promise<any>;
   }
 
   namespace offscreen {
     function createDocument(params: { url: string; reasons: string[]; justification: string }): Promise<void>;
-    const Reason: { CLIPBOARD: string };
+    const Reason: { CLIPBOARD: string; LOCAL_STORAGE: string };
   }
 }
 

@@ -1,0 +1,9 @@
+{
+  "name": "bibtex-from-url",
+  "private": true,
+  "scripts": {
+    "test": "node --test test/unit",
+    "typecheck": "npx tsc --noEmit --project jsconfig.json",
+    "ci": "npm test && npm run typecheck && make package"
+  }
+}

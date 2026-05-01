@@ -22,3 +22,20 @@ For http://developer.chrome.com/extensions/packaging.html we get:
     year = {},
     note = {(Accessed on 06/10/2014)}
     }
+
+Testing
+-------
+
+Run the unit tests with:
+
+    npm test
+
+Run the type checks with:
+
+    npm run typecheck
+
+Run the full local CI smoke suite with:
+
+    npm run ci
+
+GitHub Actions runs the same checks on every push and pull request.

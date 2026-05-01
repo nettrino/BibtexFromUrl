@@ -3,10 +3,10 @@ VERSION := $(shell python3 -c "import json; print(json.load(open('manifest.json'
 ZIP     := $(NAME)-$(VERSION).zip
 
 # Files shipped in the extension
-DIST_FILES := manifest.json background.js content.js ai.js options.js offscreen.js \
+DIST_FILES := manifest.json core.js background.js content.js ai.js options.js offscreen.js \
               options.html offscreen.html images/ LICENSE
 
-.PHONY: package clean check bump-patch bump-minor bump-major version
+.PHONY: package clean check test ci bump-patch bump-minor bump-major version
 
 # — Packaging ——————————————————————————————————————————————
 
@@ -66,3 +66,8 @@ version:
 
 check:
 	npx tsc --noEmit --project jsconfig.json
+
+test:
+	node --test test/unit
+
+ci: test check package

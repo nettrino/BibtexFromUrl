@@ -2,6 +2,9 @@
 /// <reference path="./types.js" />
 /// <reference path="./chrome.d.ts" />
 
+/** @type {BibtexCoreAPI} */
+const optionsCore = BibtexCore;
+
 /** @type {HTMLFormElement} */
 const optionsForm = /** @type {HTMLFormElement} */ (document.getElementById("optionsForm"));
 /** @type {HTMLInputElement} */
@@ -18,7 +21,7 @@ const formattingStyleSelect = /** @type {HTMLSelectElement} */ (document.getElem
 // Load stored options FIRST, before registering event listeners
 const data = await chrome.storage.sync.get("options");
 /** @type {Options} */
-const options = Object.assign({}, data.options);
+const options = optionsCore.normalizeOptions(data.options);
 
 // Initialize form elements from stored state
 /** @type {HTMLInputElement} */ (optionsForm.elements.namedItem("includeAccessDate")).checked = Boolean(options.includeAccessDate);
@@ -53,7 +56,7 @@ enableAICheckbox.addEventListener("change", (event) => {
   aiWarning.style.display = /** @type {HTMLInputElement} */ (event.target).checked ? "block" : "none";
 });
 dateFormatSelect.addEventListener("change", (event) => {
-  options.dateFormat = /** @type {HTMLSelectElement} */ (event.target).value;
+  options.dateFormat = /** @type {DateFormatCode} */ (/** @type {HTMLSelectElement} */ (event.target).value);
   chrome.storage.sync.set({ options });
 });
 formattingStyleSelect.addEventListener("change", (event) => {
