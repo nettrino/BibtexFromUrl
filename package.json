@@ -3,7 +3,11 @@
   "private": true,
   "scripts": {
     "test": "node --test test/unit",
+    "test:e2e": "npx playwright test",
     "typecheck": "npx tsc --noEmit --project jsconfig.json",
     "ci": "npm test && npm run typecheck && make package"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.59.1"
   }
 }

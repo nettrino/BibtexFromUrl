@@ -26,6 +26,9 @@ let lastInjectedTabId = null;
 /** @type {string | null} */
 let lastRequestId = null;
 
+/** @type {Promise<void> | null} */
+let offscreenCreating = null;
+
 const optionsReady = initializeOptions();
 
 /**
@@ -51,7 +54,12 @@ async function ensureOffscreenDocument(reason) {
   });
   if (contexts.length > 0) return;
 
-  await chrome.offscreen.createDocument({
+  if (offscreenCreating) {
+    await offscreenCreating;
+    return;
+  }
+
+  offscreenCreating = chrome.offscreen.createDocument({
     url: "offscreen.html",
     reasons: [reason],
     justification:
@@ -59,6 +67,12 @@ async function ensureOffscreenDocument(reason) {
         ? "Read legacy extension settings during migration."
         : "Write text to the clipboard.",
   });
+
+  try {
+    await offscreenCreating;
+  } finally {
+    offscreenCreating = null;
+  }
 }
 
 /**
@@ -111,7 +125,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
 });
 
 chrome.runtime.onInstalled.addListener(() => {
-  void initializeOptions();
+  // optionsReady already initializes at module load; avoid duplicate calls
 });
 
 /**
